@@ -1,0 +1,13 @@
+
+package:
+   name: tblink-bfms-rv
+   version: 0.0.1
+   
+   deps:
+   - name: tblink-bfms
+     url: https://github.com/tblink-bfms/tblink-bfms.git
+   
+   dev-deps:
+   - name: tblink-bfms
+     url: https://github.com/tblink-bfms/tblink-bfms.git
+     

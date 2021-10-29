@@ -1,0 +1,11 @@
+
+interface-types:
+    - rv_bfms.initiator:
+        methods:
+            - req:
+                is-export: True
+                is-blocking: False
+            - rsp:
+                is-export: False
+                is-blocking: False
+

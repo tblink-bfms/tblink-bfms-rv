@@ -1,0 +1,35 @@
+/****************************************************************************
+ * rv_initiator_bfm_sim.sv
+ *
+ ****************************************************************************/
+{% set tblink_generators = ({
+       "rv_initiator_bfm_sv.sv" : "tblink.bfm.sv",
+       "rv_initiator_bfm_vl.sv" : "tblink.bfm.vl"
+   }) 
+ %}
+
+  
+/**
+ * Module: rv_initiator_bfm
+ * 
+ * TODO: Add module documentation
+ */
+module rv_initiator_bfm #(
+		parameter WIDTH = 32
+		) (
+		input				clock,
+		input				reset,
+		output				i_valid,
+		input				i_ready,
+		output[WIDTH-1:0]	i_dat
+		);
+
+// Note: Begin Generated Content. Do Not Edit
+{{ tblink_gen(
+        iftype="rv_bfms.initiator",
+        is_mirror=false) }}
+// Note: End Generated Content.
+
+endmodule
+
+
