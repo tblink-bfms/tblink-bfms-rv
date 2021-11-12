@@ -10,4 +10,10 @@ package:
    dev-deps:
    - name: tblink-bfms
      url: https://github.com/tblink-bfms/tblink-bfms.git
+   - name: tblink-rpc-hdl
+     url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
+   - name: fwprotocol-defs
+     url: https://github.com/featherweight-ip/fwprotocol-defs.git
+   - name: mkdv
+     url: https://github.com/fvutils/mkdv.git
      
