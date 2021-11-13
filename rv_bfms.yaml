@@ -5,6 +5,10 @@ interface-types:
             - req:
                 is-export: True
                 is-blocking: False
+                parameters:
+                  - name: data
+                    type: uint64
+
             - rsp:
                 is-export: False
                 is-blocking: False

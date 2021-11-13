@@ -1,8 +1,10 @@
 /****************************************************************************
  * rv_initiator_bfm_impl.svh
+ *
+ * Interface class between TbLink library and UVM driver class
  ****************************************************************************/
 {% set tblink_generators = ({
-    "rv_bfm_impl.svh" : "tblink.bfm_impl.sv"
+    "rv_initiator_bfm_impl.svh" : "tblink.bfm_impl.sv"
     })
  %}
 
@@ -15,24 +17,50 @@ typedef class rv_initiator_driver;
  */
 class rv_initiator_bfm_impl #(int WIDTH=32) extends IInterfaceImpl;
     rv_initiator_driver #(WIDTH)    m_impl;
+    IInterfaceInst                  m_ifinst;
 {{ tblink_gen(
             iftype="rv_bfms.initiator",
             is_mirror=true,
-            kind="method_t.decl") }}
+            kind="method_t.decl",
+            ind="    ") }}
 
-	function new(rv_initiator_driver #(WIDTH) impl);
-		m_impl = impl;
+    function new(rv_initiator_driver #(WIDTH) impl);
+        m_impl = impl;
+    endfunction
+	
+    virtual function void init(IInterfaceInst ifinst);
+        m_ifinst = ifinst;
 {{ tblink_gen(
 			iftype="rv_bfms.initiator",
 			is_mirror=true,
-			kind="method_t.find") }}
-	endfunction
+			kind="method_t.find",
+			ind="        ") }}
+    endfunction
+	
+	// Interface method implementations
+{{ tblink_gen(
+			iftype="rv_bfms.initiator",
+			is_mirror=true,
+			kind="method_t.impl",
+			ind="    ") }}
 	
 {{ tblink_gen(
             iftype="rv_bfms.initiator",
             is_mirror=true,
             kind="define_type",
             ind="    ") }}
+            
+{{ tblink_gen(
+			iftype="rv_bfms.initiator",
+			is_mirror=true,
+			kind="invoke_nb",
+			ind="    ") }}
+			
+{{ tblink_gen(
+			iftype="rv_bfms.initiator",
+			is_mirror=true,
+			kind="invoke_b",
+			ind="    ") }}
 
 endclass
 
