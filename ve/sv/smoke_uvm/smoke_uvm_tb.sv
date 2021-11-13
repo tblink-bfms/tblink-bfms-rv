@@ -12,6 +12,8 @@
  * TODO: Add module documentation
  */
 module smoke_uvm_tb(input clock);
+	import uvm_pkg::*;
+	import smoke_uvm_pkg::*;
 	
 `ifdef HAVE_HDL_CLOCKGEN
 	reg clock_r = 0;
@@ -39,6 +41,10 @@ module smoke_uvm_tb(input clock);
 				.reset(reset),
 				`RV_CONNECT(i_, rv_)
 			);
+	
+	initial begin
+		run_test();
+	end
 
 
 endmodule

@@ -3,8 +3,8 @@
  *
  ****************************************************************************/
 {% set tblink_generators = ({
-       "rv_initiator_bfm_sv.sv" : "tblink.bfm.sv",
-       "rv_initiator_bfm_vl.sv" : "tblink.bfm.vl"
+       "rv_initiator_bfm_sv.sv" : "tblink.bfm_impl.sv",
+       "rv_initiator_bfm_vl.sv" : "tblink.bfm_impl.vl"
    }) 
  %}
 
@@ -27,7 +27,8 @@ module rv_initiator_bfm #(
 // Note: Begin Generated Content. Do Not Edit
 {{ tblink_gen(
         iftype="rv_bfms.initiator",
-        is_mirror=false) }}
+        is_mirror=false,
+        kind="bfm") }}
 // Note: End Generated Content.
 
 endmodule
