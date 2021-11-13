@@ -13,9 +13,9 @@ package rv_agent_pkg;
 	import uvm_pkg::*;
 	import tblink_rpc::*;
 	
-	`include "rv_agent.svh"
-	`include "rv_bfm_impl.svh"
-	`include "rv_driver.svh"
+	`include "rv_initiator_agent.svh"
+	`include "rv_initiator_bfm_impl.svh"
+	`include "rv_initiator_driver.svh"
 
 
 endpackage

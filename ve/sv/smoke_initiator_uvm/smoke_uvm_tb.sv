@@ -43,6 +43,12 @@ module smoke_uvm_tb(input clock);
 			);
 	
 	initial begin
+		uvm_config_db #(string)::set(
+				uvm_top,
+				"*m_driver*",
+				"IInterfaceInst",
+				u_bfm.inst_name());
+		
 		run_test();
 	end
 

@@ -13,10 +13,11 @@ class smoke_uvm_test extends uvm_test;
 	`uvm_component_utils(smoke_uvm_test)
 	
 	IEndpoint						m_ep;
-	rv_agent #(.WIDTH(32))			m_rv_agent;
+	rv_initiator_agent #(32)					m_rv_initiator_agent;
 
 	function new(string name, uvm_component parent=null);
 		super.new(name, parent);
+		$display("smoke_uvm_test::new");
 	endfunction
 
 	function void build_phase(uvm_phase phase);
@@ -41,7 +42,7 @@ class smoke_uvm_test extends uvm_test;
 		
 		uvm_config_db #(IEndpoint)::set(this, "*", "IEndpoint", m_ep);
 		
-		m_rv_agent = new("m_rv_agent", this);
+		m_rv_initiator_agent = new("m_rv_initiator_agent", this);
 		
 		if (m_ep.build_complete() == -1) begin
 			`uvm_fatal("loopback_smoke_test", "tblink failed to complete build");
@@ -54,6 +55,13 @@ class smoke_uvm_test extends uvm_test;
 			`uvm_fatal("loopback_smoke_test", "tblink failed to complete connect");
 		end
 	endfunction
+	
+	task run_phase(uvm_phase phase);
+		$display("--> run_phase");
+		phase.raise_objection(this, "Main", 1);
+		phase.drop_objection(this, "Main", 1);
+		$display("<-- run_phase");
+	endtask
 	
 endclass
 
