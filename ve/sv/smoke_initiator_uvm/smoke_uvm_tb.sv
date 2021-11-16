@@ -42,6 +42,9 @@ module smoke_uvm_tb(input clock);
 				`RV_CONNECT(i_, rv_)
 			);
 	
+//	assign rv_ready = rv_valid;
+	assign rv_ready = 1'b1;
+	
 	initial begin
 		uvm_config_db #(string)::set(
 				uvm_top,

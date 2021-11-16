@@ -23,8 +23,10 @@ class rv_initiator_driver #(int WIDTH=32) extends uvm_component;
 	endtask
 
 	// TODO: shouldn't need this
+	/*
 	virtual function void req(int unsigned data);
 	endfunction
+	 */
 	
 	// Implementation
 	virtual function void rsp();

@@ -1,27 +1,27 @@
 /****************************************************************************
- * rv_initiator_bfm_sim.sv
+ * rv_target_bfm_sim.sv
  *
  ****************************************************************************/
 {% set tblink_generators = ({
-       "rv_initiator_bfm_sv.sv" : "tblink.bfm_impl.sv",
-       "rv_initiator_bfm_vl.sv" : "tblink.bfm_impl.vl"
+       "rv_target_bfm_sv.sv" : "tblink.bfm_impl.sv",
+       "rv_target_bfm_vl.sv" : "tblink.bfm_impl.vl"
    }) 
  %}
 
   
 /**
- * Module: rv_initiator_bfm
+ * Module: rv_target_bfm
  * 
  * TODO: Add module documentation
  */
-module rv_initiator_bfm #(
+module rv_target_bfm #(
 		parameter WIDTH = 32
 		) (
 		input				clock,
 		input				reset,
-		output reg			i_valid,
-		input				i_ready,
-		output reg[WIDTH-1:0] i_dat
+		input reg			t_valid,
+		output				t_ready,
+		input[WIDTH-1:0] 	t_dat
 		);
 	reg[WIDTH-1:0]		data_v = 0;
 	reg[1:0]			data_valid_v = 0;

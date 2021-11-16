@@ -59,6 +59,9 @@ class smoke_uvm_test extends uvm_test;
 	task run_phase(uvm_phase phase);
 		$display("--> run_phase");
 		phase.raise_objection(this, "Main", 1);
+		for (int i=0; i<10; i++) begin
+			m_rv_initiator_agent.m_driver.send(i+1);
+		end
 		phase.drop_objection(this, "Main", 1);
 		$display("<-- run_phase");
 	endtask
