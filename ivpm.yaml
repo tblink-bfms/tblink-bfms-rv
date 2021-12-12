@@ -6,10 +6,14 @@ package:
    deps:
    - name: tblink-bfms
      url: https://github.com/tblink-bfms/tblink-bfms.git
+   - name: pytblink-rpc
+     url: https://github.com/tblink-rpc/pytblink-rpc.git
    
    dev-deps:
    - name: tblink-bfms
      url: https://github.com/tblink-bfms/tblink-bfms.git
+   - name: pytblink-rpc
+     url: https://github.com/tblink-rpc/pytblink-rpc.git
    - name: tblink-rpc-hdl
      url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
    - name: fwprotocol-defs
@@ -18,4 +22,6 @@ package:
      url: https://github.com/fvutils/mkdv.git
    - name: uvm
      url: https://www.accellera.org/images/downloads/standards/uvm/uvm-1.2.tar.gz
+   - name: vlsim
+     src: pypi
      

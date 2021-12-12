@@ -8,8 +8,8 @@ from setuptools.command.install_lib import install_lib
 from distutils.extension import Extension
 
 try:
-    from tblink_bfms import BfmExtension
-    from tblink_bfms import BfmBuildExtCmd
+    from tblink_bfms.setup import BfmExtension
+    from tblink_bfms.setup import BfmBuildExtCmd
 except Exception as e:
     print("Fallback: %s" % str(e))
     from distutils.extension import Extension as BfmExtension
