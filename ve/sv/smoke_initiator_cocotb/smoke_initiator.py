@@ -34,13 +34,13 @@ async def entry(dut):
     for i in range(16):
         dflt = tblink.getDefaultEP()
         if dflt is not None:
-            print("Found default")
+            print("Python: Found default EP", flush=True)
             break
         else:
-            print("Waiting for default")
+            print("Python: Waiting for default EP", flush=True)
             await cocotb.triggers.Timer(0, 'ns')
 
-    print("dflt=%s" % str(dflt))
+    print("Python: dflt=%s" % str(dflt), flush=True)
 
     # >> User calls library 'init'
 
@@ -53,24 +53,6 @@ async def entry(dut):
         raise Exception("Failed to connect: %s" % err)
     
     ep.init()
-
-    print("--> is_init")
-    while True:
-        ret = ep.is_init()
-        
-        if ret == 1:
-            break
-        elif ret == -1:
-            raise Exception("Failed during init")
-        else:
-            await ep.process_one_message_a()
-    print("<-- is_init")
-            
-
-    # TODO: Register BFM types with the endpoint
-
-    # TODO: not the best name...    
-    IftypeRgy.inst().endpoint_added(ep)
     
     ev = cocotb.triggers.Event()
     
@@ -80,6 +62,28 @@ async def entry(dut):
         ev.set()
     
     l = ep.addListener(event_l)
+
+    print("--> Python is_init")
+    while True:
+        ret = ep.is_init()
+        
+        if ret == 1:
+            break
+        elif ret == -1:
+            raise Exception("Failed during init")
+        else:
+            print("--> init: ev.wait")
+            await ev.wait()
+            ev.clear()
+            print("<-- init: ev.wait")
+    print("<-- Python is_init")
+            
+
+    # TODO: Register BFM types with the endpoint
+
+    # TODO: not the best name...    
+    IftypeRgy.inst().endpoint_added(ep)
+    
     
     print("Registered Types")
     for iftype in ep.getInterfaceTypes():
@@ -88,12 +92,6 @@ async def entry(dut):
     # TODO: Complete build stage. This ensures we know about all peer-registered instances
     if ep.build_complete() == -1:
         raise Exception("Build-complete failed")
-    
-    
-    def delta_cb():
-        nonlocal ev
-        print("delta_cb")
-        ev.set()
     
     for _ in range(10):
         print("--> is_build_complete", flush=True)
@@ -121,8 +119,13 @@ async def entry(dut):
     
     # << User calls library 'init'
 
+    inst_name = ""
     for ifinst in ep.getPeerInterfaceInsts():
         print("ifinst: %s" % ifinst.name())
+        if ifinst.name().endswith(".u_bfm"):
+            inst_name = ifinst.name()
+            break
+        
         
     def req_f(*args):
         print("req_f: %s" % str(args))
@@ -130,7 +133,7 @@ async def entry(dut):
     iftype = ep.findInterfaceType("rv_bfms.initiator")
     ifinst = ep.defineInterfaceInst(
         iftype,
-        "smoke_initiator_tb.u_bfm",
+        inst_name,
         True,
         req_f)
     
@@ -163,7 +166,7 @@ async def entry(dut):
 #            await cocotb.triggers.Timer(0, 'ns')
 #            ep.process_one_message()
         elif code == -1:
-            raise Exception("Is-build-complete failed")
+            raise Exception("Is-connect-complete failed")
         else:
             break
 
