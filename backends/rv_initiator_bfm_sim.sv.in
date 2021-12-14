@@ -23,9 +23,6 @@ module rv_initiator_bfm #(
 		input				i_ready,
 		output reg[WIDTH-1:0] i_dat
 		);
-`ifdef VERILATOR
-	import tblink_rpc::*;
-`endif
 	reg[WIDTH-1:0]		data_v = 0;
 	reg[1:0]			data_valid_v = 0;
 	
@@ -54,8 +51,9 @@ module rv_initiator_bfm #(
 			end
 			if (i_valid && i_ready) begin
 				data_valid_v = data_valid_v - 1;
-				$display("rsp");
+				$display("--> rsp");
 				rsp();
+				$display("<-- rsp");
 				
 				i_valid <= (data_valid_v > 0);
 				i_dat <= data_v;

@@ -119,25 +119,40 @@ async def entry(dut):
     
     # << User calls library 'init'
 
-    inst_name = ""
-    for ifinst in ep.getPeerInterfaceInsts():
-        print("ifinst: %s" % ifinst.name())
-        if ifinst.name().endswith(".u_bfm"):
-            inst_name = ifinst.name()
-            break
+    # At this point, we know what BFMs exist in the HDL environment
+    # Use the Python facade to construct user-specified classes
+    bfms = IftypeRgy.inst().build_bfms(ep)
+
+    try:
+        print("--> bfms (%s)" % str(bfms))
+        for b in bfms:
+            print("BFM: %s" % b.inst_name())
+        print("<-- bfms (%s)" % str(bfms))
+    except Exception as e:
+        print("Exception: %s" % str(e))
         
-        
-    def req_f(*args):
-        print("req_f: %s" % str(args))
-        
-    iftype = ep.findInterfaceType("rv_bfms.initiator")
-    ifinst = ep.defineInterfaceInst(
-        iftype,
-        inst_name,
-        True,
-        req_f)
+    bfm = bfms[0]
+            
     
-    print("ifinst: %s" % str(ifinst))
+    # inst_name = ""
+    # for ifinst in ep.getPeerInterfaceInsts():
+    #     print("ifinst: %s" % ifinst.name())
+    #     if ifinst.name().endswith(".u_bfm"):
+    #         inst_name = ifinst.name()
+    #         break
+    #
+    #
+    # def req_f(*args):
+    #     print("req_f: %s" % str(args))
+    #
+    # iftype = ep.findInterfaceType("rv_bfms.initiator")
+    # ifinst = ep.defineInterfaceInst(
+    #     iftype,
+    #     inst_name,
+    #     True,
+    #     req_f)
+    #
+    # print("ifinst: %s" % str(ifinst))
 
     # >> User code
 
@@ -171,33 +186,38 @@ async def entry(dut):
             break
 
     # << User calls library 'complete'
-
-    req_m = iftype.findMethod("req")
-
-    invoke_ev = cocotb.triggers.Event()
-    def invoke_ack(rval):
-        nonlocal invoke_ev
-        print("invoke_ack", flush=True)
-        invoke_ev.set()
-
-    for i in range(10):   
-        params = ifinst.mkValVec()
-        params.push_back(ifinst.mkValIntU(i, 32))
+    
+    for i in range(10):
+        await bfm.send(i)
         
-        print("--> invoke_nb(%d)" % i, flush=True)
-        ifinst.invoke_nb(req_m, params, invoke_ack)
-        print("<-- invoke_nb(%d)" % i, flush=True)
-    
-        print("--> wait_ack", flush=True)
-        await invoke_ev.wait()
-        invoke_ev.clear()
-        print("<-- wait_ack", flush=True)
-        
-        await cocotb.triggers.Timer(100, "ns")
-    
-    for ifinst in dflt.getInterfaceInsts():
-        pass
-    
+
+    # req_m = iftype.findMethod("req")
+    #
+    # invoke_ev = cocotb.triggers.Event()
+    # def invoke_ack(rval):
+    #     nonlocal invoke_ev
+    #     print("invoke_ack", flush=True)
+    #     invoke_ev.set()
+    #
+    # for i in range(10):   
+    #     params = ifinst.mkValVec()
+    #     params.push_back(ifinst.mkValIntU(i, 32))
+    #
+    #     print("--> invoke_nb(%d)" % i, flush=True)
+    #     ifinst.invoke_nb(req_m, params, invoke_ack)
+    #     print("<-- invoke_nb(%d)" % i, flush=True)
+    #
+    #     print("--> wait_ack", flush=True)
+    #     await invoke_ev.wait()
+    #     invoke_ev.clear()
+    #     print("<-- wait_ack", flush=True)
+    #
+    #     await cocotb.triggers.Timer(100, "ns")
+    #
+    # for ifinst in dflt.getInterfaceInsts():
+    #     pass
+    #
+
     print("--> wait 10ns", flush=True)
     await cocotb.triggers.Timer(10, "ns")
     print("<-- wait 10ns", flush=True)

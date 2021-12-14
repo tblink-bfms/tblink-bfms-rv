@@ -4,12 +4,12 @@ interface-types:
         methods:
             - req:
                 is-export: True
-                is-blocking: False
+                is-blocking: True
                 parameters:
                   - name: data
                     type: uint64
 
             - rsp:
                 is-export: False
-                is-blocking: False
+                is-blocking: True
 
