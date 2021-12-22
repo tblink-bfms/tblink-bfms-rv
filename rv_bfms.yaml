@@ -11,5 +11,5 @@ interface-types:
 
             - rsp:
                 is-export: False
-                is-blocking: True
+                is-blocking: False
 
