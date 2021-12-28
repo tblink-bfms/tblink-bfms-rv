@@ -16,7 +16,7 @@ else
 endif
 VPI_LIBS += $(TBLINK_RPC_PLUGIN)
 
-MKDV_PLUGINS += cocotb
+#MKDV_PLUGINS += cocotb
 
 MKDV_PYTHONPATH += $(TEST_DIR) $(abspath $(TEST_DIR)/../../../frontends/python)
 MKDV_COCOTB_MODULE = smoke_initiator
@@ -28,7 +28,10 @@ TOP_MODULE=smoke_initiator_tb
 VLSIM_CLKSPEC += clock=10ns
 VLSIM_OPTIONS += -Wno-fatal
 
-MKDV_RUN_ARGS += +tblink.launch=native.loopback 
+MKDV_RUN_ARGS += +tblink.launch=python.socket 
+MKDV_RUN_ARGS += +tblink.param+module=tblink_rpc.rt
+MKDV_RUN_ARGS += +tblink.param+python=$(PACKAGES_DIR)/python/bin/python3
+MKDV_RUN_ARGS += +tblink.class=smoke_initiator.test
 
 
 include $(TEST_DIR)/../../common/defs_rules.mk

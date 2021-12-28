@@ -10,7 +10,7 @@ import ctypes
 class RvInitiatorBfm(object):
     
     def __init__(self):
-        self.ev = tblink_rpc.Event()
+        self.ev = tblink_rpc.event()
         
     async def send(self, data):
         self.ev.clear()

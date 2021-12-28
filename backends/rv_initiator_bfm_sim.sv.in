@@ -64,11 +64,13 @@ module rv_initiator_bfm #(
 		end
 	end    
 	
-    function automatic void req(reg[63:0] data);
+    task req(input reg[63:0] data);
+    begin
     	$display("req %0d", data);
     	data_v = data[WIDTH-1:0];
     	data_valid_v = data_valid_v + 1;
-    endfunction
+    end
+    endtask
 
 // Note: Begin Generated Content. Do Not Edit
 {{ tblink_gen(
