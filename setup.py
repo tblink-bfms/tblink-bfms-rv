@@ -71,7 +71,7 @@ setup(
   name = "tblink-bfms-rv",
   version = version,
   packages=['rv_bfms'],
-  package_dir = {'' : 'python'},
+  package_dir = {'' : 'frontends/python'},
   package_data = {'ivpm': ['scripts/*', 'templates/*']},
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
