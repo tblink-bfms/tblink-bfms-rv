@@ -23,9 +23,9 @@ class test(Component):
         print("run")
        
         for i in range(10):
-            print("--> send", flush=True)
+            print("--> send %d" % i, flush=True)
             await self.u_bfm.send(i+1)
-            print("<-- send", flush=True)
+            print("<-- send %d" % i, flush=True)
         
 #        await tblink_rpc.sleep(10, TimeUnit.ns)
         self.drop_objection()

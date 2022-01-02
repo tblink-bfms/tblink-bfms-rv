@@ -28,7 +28,8 @@ TOP_MODULE=smoke_initiator_tb
 VLSIM_CLKSPEC += clock=10ns
 VLSIM_OPTIONS += -Wno-fatal
 
-MKDV_RUN_ARGS += +tblink.launch=python.socket 
+#MKDV_RUN_ARGS += +tblink.launch=python.socket 
+MKDV_RUN_ARGS += +tblink.launch=python.loopback 
 MKDV_RUN_ARGS += +tblink.param+module=tblink_rpc.rt
 MKDV_RUN_ARGS += +tblink.param+python=$(PACKAGES_DIR)/python/bin/python3
 MKDV_RUN_ARGS += +tblink.class=smoke_initiator.test
