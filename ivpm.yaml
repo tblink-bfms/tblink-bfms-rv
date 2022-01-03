@@ -2,6 +2,8 @@
 package:
    name: tblink-bfms-rv
    version: 0.0.1
+   setup-deps:
+   - tblink-bfms
    
    deps:
    - name: tblink-bfms
