@@ -85,6 +85,7 @@ setup(
                 sources=[
                     os.path.join(rootdir, "backends"),
                     os.path.join(rootdir, "frontends"),
+#                    os.path.join(rootdir, "tblink-bfms-rv.core"),
                     ])
       ],
 #  entry_points={

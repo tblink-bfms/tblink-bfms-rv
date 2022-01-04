@@ -1,0 +1,31 @@
+CAPI=2:
+#****************************************************************************
+#* tblink-bfms-rv.core
+#****************************************************************************
+
+name: tblink-bfms::rv:0.0.1
+
+filesets:
+  vlog:
+    files:
+      - backends/rv_initiator_bfm_vl.sv
+      - backends/rv_target_bfm_vl.sv
+    file_type: verilogSource
+  sv:
+    files:
+      - backends/rv_initiator_bfm_sv.sv
+      - backends/rv_target_bfm_sv.sv
+    file_type: systemVerilogSource
+    
+  sv-uvm:
+    files:
+      - frontends/uvm/rv_agent_pkg.sv
+    file_type: systemVerilogSource
+    
+targets:
+  default:
+    filesets:
+      - "!sv ? (vlog)"
+      - "sv ? (sv)"
+      - "uvm ? (sv-uvm)"
+
