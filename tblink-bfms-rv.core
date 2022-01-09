@@ -22,10 +22,16 @@ filesets:
       - frontends/uvm/rv_agent_pkg.sv
     file_type: systemVerilogSource
     
+  python-pkg:
+    files:
+      - frontends/python
+    file_type: pythonPath
+    
 targets:
   default:
     filesets:
       - "vl ? (vlog)"
       - "sv ? (sv)"
       - "uvm ? (sv-uvm)"
+      - "python ? (python-pkg)"
 

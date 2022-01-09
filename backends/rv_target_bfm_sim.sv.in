@@ -65,17 +65,15 @@ module rv_target_bfm #(
 	end    
 	 */
 	
-    task req(input reg[31:0] data);
+    task _rsp;
     begin
-    	$display("req");
-    	data_v = data;
-    	data_valid_v = data_valid_v + 1;
+    	$display("rsp");
    	end
     endtask
 
 // Note: Begin Generated Content. Do Not Edit
 {{ tblink_gen(
-        iftype="rv_bfms.initiator",
+        iftype="rv_bfms.target",
         is_mirror=false,
         kind="bfm") }}
 // Note: End Generated Content.

@@ -11,11 +11,17 @@ class RvInitiatorBfm(object):
     
     def __init__(self):
         self.ev = tblink_rpc.event()
+        self._is_reset = False
+        self._reset_ev = tblink_rpc.event()
         
     async def send(self, data):
+        
+        if not self._is_reset:
+            await self._reset_ev.wait()
+            
         self.ev.clear()
         print("--> self.req", flush=True)
-        await self.req(data)
+        await self._req(data)
         print("<-- self.req", flush=True)
         
         if not self.ev.is_set():
@@ -24,13 +30,18 @@ class RvInitiatorBfm(object):
             print("<-- await", flush=True)
 
     @tblink_rpc.exptask
-    async def req(self, data : ctypes.c_uint64):
+    async def _req(self, data : ctypes.c_uint64):
         pass
     
     @tblink_rpc.impfunc
-    def rsp(self):
+    def _rsp(self):
         print("--> rsp", flush=True)
         self.ev.set()
         print("<-- rsp", flush=True)
+        
+    @tblink_rpc.impfunc
+    def _reset(self):
+        self._is_reset = True
+        self._reset_ev.set()
     
     pass
