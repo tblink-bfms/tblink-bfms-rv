@@ -6,32 +6,19 @@ CAPI=2:
 name: tblink-bfms::rv:0.0.1
 
 filesets:
-  vlog:
+  hvl:
     files:
-      - backends/rv_initiator_bfm_vl.sv
-      - backends/rv_target_bfm_vl.sv
+      - "vl ? (backends/rv_initiator_bfm_vl.sv)"
+      - "vl ? (backends/rv_target_bfm_vl.sv)"
+      - "sv ? (backends/rv_initiator_bfm_sv.sv)"
+      - "sv ? (backends/rv_target_bfm_sv.sv)"
+      - "sv-uvm ? (frontends/uvm/rv_agent_pkg.sv)"
     file_type: verilogSource
-  sv:
-    files:
-      - backends/rv_initiator_bfm_sv.sv
-      - backends/rv_target_bfm_sv.sv
-    file_type: systemVerilogSource
-    
-  sv-uvm:
-    files:
-      - frontends/uvm/rv_agent_pkg.sv
-    file_type: systemVerilogSource
-    
-  python-pkg:
-    files:
-      - frontends/python
-    file_type: pythonPath
+    depend:
+      - tblink-rpc::tblink-rpc-hdl
     
 targets:
   default:
     filesets:
-      - "vl ? (vlog)"
-      - "sv ? (sv)"
-      - "uvm ? (sv-uvm)"
-      - "python ? (python-pkg)"
+      - hvl
 

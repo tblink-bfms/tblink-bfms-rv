@@ -13,32 +13,22 @@ class RvTargetBfm(object):
         self.ev = tblink_rpc.event()
         self._is_reset = False
         self._reset_ev = tblink_rpc.event()
+        self._req_f = None
         
-    # async def send(self, data):
-    #
-    #     if not self._is_reset:
-    #         await self._reset_ev.wait()
-    #
-    #     self.ev.clear()
-    #     print("--> self.req", flush=True)
-    #     await self.req(data)
-    #     print("<-- self.req", flush=True)
-    #
-    #     if not self.ev.is_set():
-    #         print("--> await", flush=True)
-    #         await self.ev.wait()
-    #         print("<-- await", flush=True)
-
+    def set_req_f(self, req_f):
+        self._req_f = req_f
+        
     @tblink_rpc.impfunc
-    async def _req(self, data : ctypes.c_uint64):
-        pass
+    def _req(self, data : ctypes.c_uint64):
+        if self._req_f is not None:
+            self._req_f(data)
     
     @tblink_rpc.exptask
-    def _rsp(self):
+    async def _rsp(self):
         pass
         
     @tblink_rpc.impfunc
     def _reset(self):
         self._is_reset = True
         self._reset_ev.set()
-    pass
+
