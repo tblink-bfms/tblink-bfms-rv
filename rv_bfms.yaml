@@ -8,6 +8,15 @@ interface-types:
                 parameters:
                   - name: data
                     type: uint64
+                    
+            - _req2:
+                is-export: True
+                is-blocking: True
+                parameters:
+                  - name: data1
+                    type: uint64
+                  - name: data2
+                    type: uint64
 
             - _rsp:
                 is-export: False

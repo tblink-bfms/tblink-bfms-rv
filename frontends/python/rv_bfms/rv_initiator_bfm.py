@@ -19,18 +19,41 @@ class RvInitiatorBfm(object):
         if not self._is_reset:
             await self._reset_ev.wait()
             
-        self.ev.clear()
-        print("--> self.req", flush=True)
-        await self._req(data)
-        print("<-- self.req", flush=True)
-        
-        if not self.ev.is_set():
-            print("--> await", flush=True)
+        if not isinstance(data, list):
+            data = [data]
+
+        i = 0
+        while i < len(data):
+            self.ev.clear()
+            
+            if i == 0 and len(data) > 1:
+                # Send two values initially
+                await self._req2(data[i], data[i+1])
+                i += 1
+            else:
+                await self._req(data[i])
+                
+            if not self.ev.is_set():
+                print("--> await", flush=True)
+                await self.ev.wait()
+                self.ev.clear()
+                print("<-- await", flush=True)
+                
+            i += 1
+                
+        if len(data) > 1:
             await self.ev.wait()
-            print("<-- await", flush=True)
+            self.ev.clear()
+            
 
     @tblink_rpc.exptask
     async def _req(self, data : ctypes.c_uint64):
+        pass
+    
+    @tblink_rpc.exptask
+    async def _req2(self, 
+                    data1 : ctypes.c_uint64,
+                    data2 : ctypes.c_uint64):
         pass
     
     @tblink_rpc.impfunc
