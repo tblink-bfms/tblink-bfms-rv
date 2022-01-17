@@ -16,6 +16,7 @@ filesets:
     file_type: verilogSource
     depend:
       - tblink-rpc::tblink-rpc-hdl
+      - featherweight-ip::fwprotocol-defs
     
 targets:
   default:

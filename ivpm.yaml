@@ -14,6 +14,8 @@ package:
      url: https://github.com/tblink-rpc/tblink-rpc-cocotb.git
    - name: tblink-rpc-hdl
      url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
+   - name: fwprotocol-defs
+     url: https://github.com/featherweight-ip/fwprotocol-defs.git
    
    dev-deps:
    - name: tblink-bfms
