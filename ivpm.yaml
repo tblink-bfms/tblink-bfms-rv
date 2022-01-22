@@ -10,8 +10,6 @@ package:
      url: https://github.com/tblink-bfms/tblink-bfms.git
    - name: pytblink-rpc
      url: https://github.com/tblink-rpc/pytblink-rpc.git
-   - name: tblink-rpc-cocotb
-     url: https://github.com/tblink-rpc/tblink-rpc-cocotb.git
    - name: tblink-rpc-hdl
      url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
    - name: fwprotocol-defs
@@ -22,8 +20,6 @@ package:
      url: https://github.com/tblink-bfms/tblink-bfms.git
    - name: pytblink-rpc
      url: https://github.com/tblink-rpc/pytblink-rpc.git
-   - name: tblink-rpc-cocotb
-     url: https://github.com/tblink-rpc/tblink-rpc-cocotb.git
    - name: tblink-rpc-hdl
      url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
    - name: fwprotocol-defs
