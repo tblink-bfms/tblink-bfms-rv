@@ -22,6 +22,10 @@ package:
      url: https://github.com/tblink-rpc/pytblink-rpc.git
    - name: tblink-rpc-hdl
      url: https://github.com/tblink-rpc/tblink-rpc-hdl.git
+   - name: tblink-rpc-gw
+     url: https://github.com/tblink-rpc/tblink-rpc-gw.git
+   - name: fw-rv-comps
+     url: http://github.com/featherweight-ip/fw-rv-comps.git
    - name: fwprotocol-defs
      url: https://github.com/featherweight-ip/fwprotocol-defs.git
    - name: mkdv
