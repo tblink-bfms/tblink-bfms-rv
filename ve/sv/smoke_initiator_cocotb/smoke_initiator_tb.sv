@@ -32,11 +32,24 @@ module smoke_initiator_tb(input clock);
 `include "iverilog_control.svh"
 `endif
 	
-	wire reset /*verilator public */ = 0;
+	reg reset /*verilator public */ = 0;
+	
+	reg[7:0] reset_cnt = 0;
+	
+	always @(posedge clock) begin
+		if (reset_cnt == 20) begin
+			reset <= 1'b0;
+		end else begin
+			if (reset_cnt == 1) begin
+				reset <= 1'b1;
+			end
+			reset_cnt <= reset_cnt + 1'b1;
+		end
+	end
 	
 	`RV_WIRES(rv_, 32);
 	
-	rv_initiator_bfm #(
+	rv_initiator_bfm_sim #(
 			.WIDTH(32)
 			) u_bfm (
 				.clock(clock),

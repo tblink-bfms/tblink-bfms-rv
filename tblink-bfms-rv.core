@@ -17,7 +17,9 @@ filesets:
       - "sv-uvm ? (frontends/uvm/rv_agent_pkg.sv)"
     file_type: verilogSource
     depend:
-      - tblink-rpc::tblink-rpc-hdl
+      - "vl ? (tblink-rpc::tblink-rpc-hdl)"
+      - "sv ? (tblink-rpc::tblink-rpc-hdl)"
+      - "vl-syn ? (tblink-rpc::tblink-rpc-gw)"
       - featherweight-ip::fwprotocol-defs
     
 targets:

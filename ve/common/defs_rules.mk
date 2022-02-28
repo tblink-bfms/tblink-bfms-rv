@@ -5,7 +5,8 @@ DV_MK:=$(shell PATH=$(PACKAGES_DIR)/python/bin:$(PATH) python3 -m mkdv mkfile)
 
 ifneq (1,$(RULES))
 
-include $(PACKAGES_DIR)/fwprotocol-defs/verilog/rtl/defs_rules.mk
+MKDV_PYTHONPATH += $(TBLINK_BFMS_RV_VE_COMMONDIR)/python
+
 include $(DV_MK)
 else # Rules
 include $(DV_MK)

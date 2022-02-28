@@ -1,45 +1,45 @@
 
 interface-types:
-    - rv_bfms.initiator:
-        methods:
-            - _req:
-                is-export: True
-                is-blocking: True
-                parameters:
-                  - name: data
-                    type: uint64
+  - name: rv_bfms.initiator
+    methods:
+    - name: _req
+      is-export: True
+      is-blocking: True
+      parameters:
+      - name: data
+        type: uint64
                     
-            - _req2:
-                is-export: True
-                is-blocking: True
-                parameters:
-                  - name: data1
-                    type: uint64
-                  - name: data2
-                    type: uint64
+    - name: _req2
+      is-export: True
+      is-blocking: True
+      parameters:
+      - name: data1
+        type: uint64
+      - name: data2
+        type: uint64
 
-            - _rsp:
-                is-export: False
-                is-blocking: False
+    - name: _rsp
+      is-export: False
+      is-blocking: False
                 
-            - _reset:
-                is-export: False
-                is-blocking: False
+    - name: _reset
+      is-export: False
+      is-blocking: False
 
-    - rv_bfms.target:
-        methods:
-            - _req:
-                is-export: False
-                is-blocking: False
-                parameters:
-                  - name: data
-                    type: uint64
+  - name: rv_bfms.target
+    methods:
+    - name: _req
+      is-export: False
+      is-blocking: False
+      parameters:
+      - name: data
+        type: uint64
 
-            - _rsp:
-                is-export: True
-                is-blocking: True
+    - name: _rsp
+      is-export: True
+      is-blocking: True
                 
-            - _reset:
-                is-export: False
-                is-blocking: False
+    - name: _reset
+      is-export: False
+      is-blocking: False
 

@@ -5,7 +5,7 @@
 `include "rv_macros.svh"
 
 /**
- * Module: rv_initiator_bfm
+ * Module: rv_initiator_bfm_syn
  * 
  * TODO: Add module documentation
  */

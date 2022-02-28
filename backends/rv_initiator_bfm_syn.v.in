@@ -1,0 +1,172 @@
+/****************************************************************************
+ * rv_initiator_bfm_sim.sv
+ *
+ ****************************************************************************/
+ {% set tblink_generators = ({
+ 	"rv_initiator_bfm_syn.v" : "tblink.bfm_impl.vl-syn"
+ 	})
+  %}
+`include "rv_macros.svh"
+
+/**
+ * Module: rv_initiator_bfm_syn
+ * 
+ * TODO: Add module documentation
+ */
+module rv_initiator_bfm_syn #(
+		parameter ADDR = 1,
+		parameter WIDTH = 32
+		) (
+		input				cclock,
+		input				uclock,
+		input				reset,
+		input				hreq_i,
+		output				hreq_o,
+		`RV_TARGET_PORT(neti_, 8),
+		`RV_INITIATOR_PORT(neto_, 8),
+		output				i_valid,
+		input				i_ready,
+		output[WIDTH-1:0] 	i_dat
+		);
+	reg[WIDTH-1:0]		data_v;
+	reg					data_v_put_i;
+	reg					data_v_get_i;
+	reg[1:0]			data_v_count = 0;
+	
+	wire ep_hreq_i, ep_hreq_o;
+	
+	reg hreq_o_r;
+	
+	always @(posedge uclock or posedge reset) begin
+		if (reset) begin
+			hreq_o_r <= 1'b0;
+		end else begin
+			hreq_o_r <= 1'b0; // TODO:
+		end
+	end
+	
+	assign hreq_o = hreq_o_r;
+
+	reg						in_reset = 0;
+	reg[1:0]				state;
+	
+	assign i_dat = data_v;
+	assign i_valid = (state == 2'b01);
+	reg						cmd_out_put_i;
+	
+	always @(posedge cclock or posedge reset) begin
+		if (reset) begin
+			data_v_get_i <= 1'b0;
+			data_v <= {WIDTH{1'b0}};
+			state <= {2{1'b0}};
+			cmd_out_put_i <= 1'b0;
+		end else begin
+			case (state)
+				2'b00: begin // Wait for a request
+					// Wrap in a function
+					if (data_v_get_i != data_v_put_i) begin
+						data_v_get_i <= ~data_v_get_i;
+						state <= 2'b01;
+					end
+				end
+				2'b01: begin // Wait for an ack
+					if (i_valid && i_ready) begin
+						_rsp();
+						state <= 2'b10;
+					end
+				end
+				2'b10: begin // TODO: wait for ack complete
+					// Technically this isn't necessary due 
+					// to controlled clock gating
+					state <= 2'b00;
+				end
+			endcase
+		end
+	end    
+
+	// Need to specify reset variables and values
+	// Maybe use a macro?
+	
+    task _req(input reg[63:0] data);
+    begin
+		$display("rv-bfm: _req=%08h", data);
+    	data_v <= data;
+    	data_v_put_i <= ~data_v_put_i;
+    end
+    endtask
+    
+    task _rsp;
+    	cmd_out_put_i <= ~cmd_out_put_i;
+    endtask
+
+	assign ep_hreq_i = 0;
+	
+	assign hreq_i = 0;
+	
+	`RV_WIRES(tipo_, 8);
+	`RV_WIRES(tipi_, 8);
+	
+	tblink_rpc_ep #(
+		.ADDR        (ADDR       )
+		) u_ep (
+		.uclock      (uclock     ), 
+		.reset       (reset      ), 
+		.hreq_i      (ep_hreq_i ), 
+		.hreq_o      (ep_hreq_o ), 
+		`RV_CONNECT(neti_, neti_),
+		`RV_CONNECT(neto_, neto_),
+		`RV_CONNECT(tipo_, tipo_),
+		`RV_CONNECT(tipi_, tipi_)
+		);
+
+	wire[7:0]				cmd_in;
+	wire[7:0]				cmd_in_sz;
+	wire[8*8-1:0]			cmd_in_params;
+	wire					cmd_in_put_i;
+	reg						cmd_in_get_i;
+	wire					cmd_out_get_i;		
+	tblink_rpc_cmdproc #(
+			.CMD_IN_PARAMS_SZ(8),
+			.CMD_IN_RSP_SZ(1),
+			.CMD_OUT_PARAMS_SZ(1),
+			.CMD_OUT_RSP_SZ(1)
+		) u_cmdproc (
+			.uclock		(uclock				),
+			.reset		(reset				),
+			`RV_CONNECT(tipo_, tipo_		),
+			`RV_CONNECT(tipi_, tipi_		),
+			.cmd_in		(cmd_in				),
+			.cmd_in_sz	(cmd_in_sz			),
+			.cmd_in_params	(cmd_in_params	),
+			.cmd_in_put_i	(cmd_in_put_i	),
+			.cmd_in_get_i	(cmd_in_get_i	),
+			.cmd_in_rsp		(0),
+			.cmd_in_rsp_sz	(0),
+			.cmd_out(1),
+			.cmd_out_sz(0),
+			.cmd_out_params(0),
+			.cmd_out_put_i	(cmd_out_put_i),
+			.cmd_out_get_i	(cmd_out_get_i)
+		);
+		
+	always @(posedge uclock or posedge reset) begin
+		if (reset) begin
+			cmd_in_get_i <= 1'b0;
+			data_v_put_i <= 1'b0;
+			data_v <= 0;
+		end else begin
+			if (cmd_in_get_i != cmd_in_put_i) begin
+				case (cmd_in)
+					8'h1: begin
+						_req(cmd_in_params);
+						cmd_in_get_i <= ~cmd_in_get_i;
+					end
+					default: begin
+					end
+				endcase
+			end
+		end
+	end
+
+endmodule
+

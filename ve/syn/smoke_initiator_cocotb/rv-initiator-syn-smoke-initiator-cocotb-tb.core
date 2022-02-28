@@ -1,0 +1,20 @@
+CAPI=2:
+
+name: tblink-bfms-rv:rv-initiator-syn:smoke-initiator-cocotb-tb
+
+filesets:
+  hvl:
+    files:
+      - smoke_initiator_tb.sv
+    file_type: systemVerilogSource
+    depend:
+      - "vl ? (tblink-rpc::tblink-rpc-hdl)"
+      - "sv ? (tblink-rpc::tblink-rpc-hdl)"
+      - "vl-syn ? (tblink-rpc::tblink-rpc-gw)"
+      - featherweight-ip::fwprotocol-defs
+
+targets:
+  default:
+    filesets:
+      - hvl
+            

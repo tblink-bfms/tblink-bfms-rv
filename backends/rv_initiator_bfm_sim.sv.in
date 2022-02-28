@@ -3,18 +3,18 @@
  *
  ****************************************************************************/
 {% set tblink_generators = ({
-       "rv_initiator_bfm_sv.sv" : "tblink.bfm_impl.sv",
-       "rv_initiator_bfm_vl.sv" : "tblink.bfm_impl.vl"
+       "rv_initiator_bfm_sim_sv.sv" : "tblink.bfm_impl.sv",
+       "rv_initiator_bfm_sim_vl.sv" : "tblink.bfm_impl.vl"
    }) 
  %}
 
   
 /**
- * Module: rv_initiator_bfm
+ * Module: rv_initiator_bfm_sim
  * 
  * TODO: Add module documentation
  */
-module rv_initiator_bfm #(
+module rv_initiator_bfm_sim #(
 		parameter WIDTH = 32
 		) (
 		input				clock,

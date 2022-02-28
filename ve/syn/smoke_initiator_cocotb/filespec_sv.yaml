@@ -1,0 +1,19 @@
+
+filespec:
+  - vlnv: tblink-bfms-rv:rv-initiator-syn:smoke-initiator-cocotb-tb
+    out:
+      - name: MKDV_VL_SRCS
+        type:
+          - verilogSource
+          - systemVerilogSource
+        flags: 
+          - sv
+          - vl-syn
+      - name: MKDV_VL_INCDIRS
+        type:
+          - verilogSource
+          - systemVerilogSource
+        flags:
+          - sv
+          - vl-syn
+        include: True
