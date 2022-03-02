@@ -3,7 +3,7 @@ Created on Feb 21, 2022
 
 @author: mballance
 '''
-from tblink_rpc_gw.transport.msg_bfm_cmd import MsgBfmCmd
+from tblink_rpc_gw.msg_bfm_cmd import MsgBfmCmd
 import tblink_rpc
 
 class EpIoBfm(object):

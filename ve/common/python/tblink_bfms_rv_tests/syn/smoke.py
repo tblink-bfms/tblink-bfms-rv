@@ -3,8 +3,8 @@ import cocotb
 import tblink_rpc
 import rv_bfms
 from tblink_bfms_rv_tests.syn.test_base import TestBase
-from tblink_rpc_gw.transport.msg_bfm_cmd import MsgBfmCmd
-from tblink_rpc_gw.transport.msg_ctrl_factory import MsgCtrlFactory
+from tblink_rpc_gw.msg_bfm_cmd import MsgBfmCmd
+from tblink_rpc_gw.msg_ctrl_factory import MsgCtrlFactory
 
 class SmokeTest(TestBase):
 
