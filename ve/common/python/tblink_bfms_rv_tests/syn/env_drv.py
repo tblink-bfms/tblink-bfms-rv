@@ -17,7 +17,6 @@ class EnvDrv(object):
         await tblink_rpc.cocotb_compat.init()
         self.bfm2ctrl = tblink_rpc.cocotb_compat.find_ifinst(".*u_bfm2ctrl")
         self.ctrl2bfm = tblink_rpc.cocotb_compat.find_ifinst(".*u_ctrl2bfm")
-        self.ep_bfm = EpIoBfm(self.bfm2ctrl, self.ctrl2bfm)
         pass
     
     async def run(self):

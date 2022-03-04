@@ -7,6 +7,7 @@ ifneq (1,$(RULES))
 
 MKDV_PYTHONPATH += $(TBLINK_BFMS_RV_VE_COMMONDIR)/python
 
+include $(PACKAGES_DIR)/fwprotocol-defs/verilog/rtl/defs_rules.mk
 include $(DV_MK)
 else # Rules
 include $(DV_MK)

@@ -14,6 +14,14 @@ class RvTargetBfm(object):
         self._is_reset = False
         self._reset_ev = tblink_rpc.event()
         self._req_f = None
+        self._req_q = []
+        self._req_ev = tblink_rpc.event()
+        
+    async def recv(self):
+        while len(self._req_q) == 0:
+            await self._req_ev.wait()
+            self._req_ev.clear()
+        return self._req_q.pop(0)
         
     def set_req_f(self, req_f):
         self._req_f = req_f
@@ -22,6 +30,9 @@ class RvTargetBfm(object):
     def _req(self, data : ctypes.c_uint64):
         if self._req_f is not None:
             self._req_f(data)
+        else:
+            self._req_q.append(data)
+            self._req_ev.set()
     
     @tblink_rpc.exptask
     async def _rsp(self):

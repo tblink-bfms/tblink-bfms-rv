@@ -9,6 +9,7 @@ import multiprocessing as mp
 from multiprocessing import Pipe
 from enum import Enum, auto
 from tblink_bfms_rv_tests.syn.env_drv import EnvDrv
+import traceback
 
 class SmokeTest(TestBase):
 
@@ -22,7 +23,9 @@ class SmokeTest(TestBase):
         await super().run()
         
 class PktKind(Enum):
-    Data = auto()
+    ReqPktSend = auto()
+    ReqPktRecv = auto()
+    RspPkt = auto()
     Term = auto()
         
 class Pkt(object):
@@ -36,38 +39,81 @@ class Pkt(object):
     pass
         
 def remote_process(remote_conn):
+    # TOOD: remote process needs to tell the main process what it needs it
+    # to do.
+    # - Send packet
+    # - Receive (and forward) packet
+    #
     print("remote_process", flush=True)
     try:
-        print("--> Send Pkt", flush=True)
-        remote_conn.send(Pkt(PktKind.Data, MsgCtrlFactory.mkGetTimeReq(0)))
-        print("<-- Send Pkt", flush=True)
+        print("[0] --> Send SendPkt Req", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktSend, MsgCtrlFactory.mkGetTimeReq(0)))
+        print("[0] <-- Send SendPkt Req", flush=True)
         
-        print("--> Recv Pkt", flush=True)
+        print("[0] --> Recv SendPkt Resp", flush=True)
         pkt = remote_conn.recv()
-        print("<-- Recv Pkt", flush=True)
+        print("[0] <-- Recv SendPkt Resp", flush=True)
+        
+        print("[1] --> Send RecvPkt", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktRecv))
+        print("[1] <-- Send RecvPkt", flush=True)
+        
+        print("[1] --> Recv RecvPkt Resp", flush=True)
+        pkt = remote_conn.recv()
+        print("[1] <-- Recv RecvPkt Resp", flush=True)
+        print("[1] pkt: %s %s" % (str(pkt), str(pkt.data.pack())), flush=True)
+
+        # Set Timer
+        print("[2] --> Send SendPkt Req", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktSend, MsgCtrlFactory.mkSetTimer(1, 1000)))
+        print("[2] <-- Send SendPkt Req", flush=True)
+        
+        print("[2] --> Recv SendPkt Resp", flush=True)
+        pkt = remote_conn.recv()
+        print("[2] <-- Recv SendPkt Resp", flush=True)
+        
+        print("[3] --> Send RecvPkt", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktRecv))
+        print("[3] <-- Send RecvPkt", flush=True)
+        
+        print("[3] --> Recv RecvPkt Resp", flush=True)
+        pkt = remote_conn.recv()
+        print("[3] <-- Recv RecvPkt Resp", flush=True)
+        print("[3] pkt: %s %s" % (str(pkt), str(pkt.data.pack())), flush=True)
+      
+        print("--> Send SendPkt Req", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktSend, MsgCtrlFactory.mkRelease(2)))
+        print("<-- Send SendPkt Req", flush=True)
+        
+        print("--> Recv SendPkt Rsp", flush=True)
+        pkt = remote_conn.recv()
+        print("<-- Recv SendPkt Rsp", flush=True)
         print("pkt: %s %s" % (str(pkt), str(pkt.data.pack())), flush=True)
         
-        print("--> Send Pkt", flush=True)
-        remote_conn.send(Pkt(PktKind.Data, MsgCtrlFactory.mkSetTimer(1, 1000)))
-        print("<-- Send Pkt", flush=True)
+        print("--> Send RecvPkt", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktRecv))
+        print("<-- Send RecvPkt", flush=True)
         
-        print("--> Recv Pkt", flush=True)
+        print("--> Recv RecvPkt Resp", flush=True)
         pkt = remote_conn.recv()
-        print("<-- Recv Pkt", flush=True)
+        print("<-- Recv RecvPkt Resp", flush=True)
         print("pkt: %s %s" % (str(pkt), str(pkt.data.pack())), flush=True)
         
-        print("--> Send Pkt", flush=True)
-        remote_conn.send(Pkt(PktKind.Data, MsgCtrlFactory.mkRelease(2)))
-        print("<-- Send Pkt", flush=True)
+        print("== Wait for wakeup")
         
-        print("--> Recv Pkt", flush=True)
+        print("--> Send RecvPkt", flush=True)
+        remote_conn.send(Pkt(PktKind.ReqPktRecv))
+        print("<-- Send RecvPkt", flush=True)
+        
+        print("--> Recv RecvPkt Resp", flush=True)
         pkt = remote_conn.recv()
-        print("<-- Recv Pkt", flush=True)
+        print("<-- Recv RecvPkt Resp", flush=True)
         print("pkt: %s %s" % (str(pkt), str(pkt.data.pack())), flush=True)
         
         pass
         remote_conn.send(Pkt(PktKind.Term, exc=None))
     except Exception as e:
+        traceback.print_exc()
         remote_conn.send(Pkt(PktKind.Term, exc=e))
         
 remote_proc = None
@@ -104,6 +150,15 @@ async def entry(dut):
         
         atexit.register(atexit_cleanup, remote_proc)
         
+        # States:
+        # - Released
+        #   - Wait for event back from hardware
+        #   - 
+        # - Waiting
+        #   - Hardware is waitinf for message from EP
+        #   - We must also wait for message from EP
+        #   - Send received message, wait for response
+        
         while True:
             print("--> poll", flush=True)
             ret = this_conn.poll(1)
@@ -117,15 +172,42 @@ async def entry(dut):
                 if obj.kind == PktKind.Term:
                     print("Got term")
                     break
-                elif obj.kind == PktKind.Data:
-                    # Send/Recv data
-                    print("--> Send to BFM", flush=True)
-                    print("obj.data=%s obj.data.pack=%s" % (str(obj.data), str(obj.data.pack())))
-                    rsp = await drv.ep_bfm.send(obj.data)
-                    print("<-- Send to BFM", flush=True)
-                    print("--> Send to Remote", flush=True)
-                    this_conn.send(Pkt(PktKind.Data, data=rsp))
-                    print("<-- Send to Remote", flush=True)
+                elif obj.kind == PktKind.ReqPktSend:
+                    print("== PktKind.ReqPktSend")
+                    pkt = obj.data
+                    
+                    await drv.bfm2ctrl.send(pkt.pack())
+                    
+                    this_conn.send(Pkt(PktKind.RspPkt, data=None))
+                    
+                elif obj.kind == PktKind.ReqPktRecv:
+                    print("== PktKind.ReqPktRecv")
+
+                    # TODO: need a message-decode loop here                    
+                    
+                    # Receive destination
+                    dst = await drv.ctrl2bfm.recv()
+                    
+                    print("dst=%d" % dst)
+                    
+                    # Receive size
+                    size = await drv.ctrl2bfm.recv()
+                    size += 1
+                    
+                    print("size=%d" % size)
+
+                    payload = []
+                    for _ in range(size):
+                        data = await drv.ctrl2bfm.recv()
+                        payload.append(data)
+                        print("data=%d" % data)
+                        
+                    rsp = MsgBfmCmd(0, payload[1], payload[0])
+                    rsp.payload.extend(payload[2:])
+                    
+                    this_conn.send(Pkt(PktKind.RspPkt, data=rsp))
+                else:
+                    print("== Unknown request")
             else:
                 if not remote_proc.is_alive():
                     print("Process closed")

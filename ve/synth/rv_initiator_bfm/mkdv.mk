@@ -5,10 +5,11 @@ MKDV_TOOL ?= openlane
 #TBLINK_RPC_UVM_PLUGIN := $(shell python3 -m tblink_rpc_hdl simplugin)
 
 #DPI_LIBS += $(TBLINK_RPC_UVM_PLUGIN)
-#MKDV_BUILD_DEPS += gen-bfms
+MKDV_BUILD_DEPS += gen-bfms
 #MKDV_VL_SRCS += $(TBLINK_RPC_UVM_FILES)
-MKDV_VL_SRCS += $(SYNTH_DIR)/../../../backends/rv_initiator_bfm_syn.v
+MKDV_VL_SRCS += $(MKDV_CACHEDIR)/bfm/backends/rv_initiator_bfm_syn.v
 MKDV_VL_SRCS += $(SYNTH_DIR)/../../../packages/tblink-rpc-gw/verilog/rtl/tblink_rpc_ep.v
+MKDV_VL_SRCS += $(SYNTH_DIR)/../../../packages/tblink-rpc-gw/verilog/rtl/tblink_rpc_cmdproc.v
 MKDV_VL_SRCS += $(SYNTH_DIR)/../../../packages/tblink-rpc-gw/verilog/rtl/tblink_rpc_rvdemux.v
 MKDV_VL_SRCS += $(SYNTH_DIR)/../../../packages/tblink-rpc-gw/verilog/rtl/tblink_rpc_rvmux.v
 MKDV_VL_SRCS += $(SYNTH_DIR)/../../../packages/fw-rv-comps/verilog/rtl/fw_rv_buffer.v

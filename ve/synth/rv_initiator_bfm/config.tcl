@@ -44,7 +44,7 @@ set ::env(PL_RESIZER_HOLD_SLACK_MARGIN) 0.15
 #set ::env(FP_PIN_ORDER_CFG) $script_dir/pin_order.cfg
 
 #set ::env(PL_BASIC_PLACEMENT) 1
-set ::env(PL_TARGET_DENSITY) 0.75
+set ::env(PL_TARGET_DENSITY) 0.80
 
 # If you're going to use multiple power domains, then keep this disabled.
 #set ::env(RUN_CVC) 0
