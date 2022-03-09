@@ -126,6 +126,7 @@ module rv_initiator_bfm_syn #(
 	reg						cmd_in_get_i;
 	wire					cmd_out_get_i;		
 	tblink_rpc_cmdproc #(
+			.ADDR(ADDR),
 			.CMD_IN_PARAMS_SZ(8),
 			.CMD_IN_RSP_SZ(1),
 			.CMD_OUT_PARAMS_SZ(1),

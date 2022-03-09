@@ -1,21 +1,27 @@
 
+from enum import Enum, auto
+from multiprocessing import Pipe
+import traceback
+from typing import List, Dict
+
 import cocotb
-import tblink_rpc
+
+import multiprocessing as mp
 import rv_bfms
+from tblink_bfms_rv_tests.syn import test_base
+from tblink_bfms_rv_tests.syn.env_drv import EnvDrv
+import tblink_rpc
 from tblink_rpc_gw.msg_bfm_cmd import MsgBfmCmd
 from tblink_rpc_gw.msg_ctrl_factory import MsgCtrlFactory
-import multiprocessing as mp
-from multiprocessing import Pipe
-from enum import Enum, auto
-from tblink_bfms_rv_tests.syn.env_drv import EnvDrv
-import traceback
-from tblink_bfms_rv_tests.syn import test_base
 import tblink_rpc_gw.test as gwt
+from tblink_rpc import cocotb_compat
+
 
 class SmokeTest(gwt.TestBase):
     
     def __init__(self):
         self._tp = None
+        self._u_dut = None
     
     async def init(self):
         print("Smoke.init")
@@ -23,13 +29,25 @@ class SmokeTest(gwt.TestBase):
         pass
 
     async def run(self):
-        msg = MsgBfmCmd(1, 0 , 1, [1, 2, 3, 4])
-        await self.bfm2ctrl.send(msg.pack())
-        msg = MsgCtrlFactory.mkRelease(1)
-        await self.bfm2ctrl.send(msg.pack())
+        print("Smoke.run")
+#        msg = MsgBfmCmd(1, 0 , 1, [1, 2, 3, 4])
+#        await self.bfm2ctrl.send(msg.pack())
+#        msg = MsgCtrlFactory.mkRelease(1)
+#        await self.bfm2ctrl.send(msg.pack())
 #        rsp = await self.ep_bfm.send(msg)
+
+        for ifinst in cocotb_compat.ifinsts():
+            print("InterfaceInst: %s" % str(ifinst))
+            
+        self._u_dut = tblink_rpc.cocotb_compat.find_ifinst(".*u_dut")
+            
+        print("--> SLEEP")
         await cocotb.triggers.Timer(10, 'us')
-        await super().run()
+        print("<-- SLEEP")
+        print("--> SLEEP")
+        await cocotb.triggers.Timer(10, 'us')
+        print("<-- SLEEP")
+#        await super().run()
         
     async def get_transport(self):
         if self._tp is None:
@@ -37,6 +55,11 @@ class SmokeTest(gwt.TestBase):
             self._tp = EnvDrv()
             await self._tp.init()
         return self._tp
+    
+    def get_ifinst_info(self) -> List[Dict]:
+        return [
+            dict(name="smoke_initiator_tb.u_dut", addr=1, iftype="rv_bfms.initiator", is_mirror=False)
+            ]
         
 @cocotb.test()
 async def entry(dut):
