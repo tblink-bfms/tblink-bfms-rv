@@ -18,9 +18,11 @@ class RvTargetBfm(object):
         self._req_ev = tblink_rpc.event()
         
     async def recv(self):
+        print("--> RvTargetBfm::recv %d" % len(self._req_q), flush=True)
         while len(self._req_q) == 0:
             await self._req_ev.wait()
             self._req_ev.clear()
+        print("<-- RvTargetBfm::recv", flush=True)
         return self._req_q.pop(0)
         
     def set_req_f(self, req_f):
@@ -28,11 +30,15 @@ class RvTargetBfm(object):
         
     @tblink_rpc.impfunc
     def _req(self, data : ctypes.c_uint64):
+        print("--> RvTargetBfm::_req %d" % data)
         if self._req_f is not None:
+            print("-- Send to req_f", flush=True)
             self._req_f(data)
         else:
+            print("-- Queue req_q", flush=True)
             self._req_q.append(data)
             self._req_ev.set()
+        print("<-- RvTargetBfm::_req %d" % data)
     
     @tblink_rpc.exptask
     async def _rsp(self):

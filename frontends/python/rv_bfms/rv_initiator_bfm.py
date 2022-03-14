@@ -15,6 +15,7 @@ class RvInitiatorBfm(object):
         self._reset_ev = tblink_rpc.event()
         
     async def send(self, data):
+        print("send: %s" % str(data))
         
         if not self._is_reset:
             await self._reset_ev.wait()
@@ -28,7 +29,9 @@ class RvInitiatorBfm(object):
             
             if i == 0 and len(data) > 1:
                 # Send two values initially
+                print("--> Calling _req2", flush=True)
                 await self._req2(data[i], data[i+1])
+                print("<-- Calling _req2", flush=True)
                 i += 1
             else:
                 await self._req(data[i])
@@ -48,12 +51,14 @@ class RvInitiatorBfm(object):
 
     @tblink_rpc.exptask
     async def _req(self, data : ctypes.c_uint64):
+        print("_req called")
         pass
     
     @tblink_rpc.exptask
     async def _req2(self, 
                     data1 : ctypes.c_uint64,
                     data2 : ctypes.c_uint64):
+        print("_req2 called")
         pass
     
     @tblink_rpc.impfunc

@@ -40,6 +40,11 @@ class SmokeTest(gwt.TestBase):
             print("InterfaceInst: %s" % str(ifinst))
             
         self._u_dut = tblink_rpc.cocotb_compat.find_ifinst(".*u_dut")
+        self._u_dut._is_reset = True
+
+        print("--> send")        
+        await self._u_dut.send([1, 2, 3, 4])
+        print("<-- send")        
             
         print("--> SLEEP")
         await cocotb.triggers.Timer(10, 'us')

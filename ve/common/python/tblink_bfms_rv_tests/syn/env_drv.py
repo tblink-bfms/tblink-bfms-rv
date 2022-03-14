@@ -27,4 +27,7 @@ class EnvDrv(TestBackendTransport):
         await self.bfm2ctrl.send(pkt.pack())
         
     async def recv_b(self) -> int:
-        return await self.ctrl2bfm.recv()
+        print("--> EnvDrv::recv_b", flush=True)
+        ret = await self.ctrl2bfm.recv()
+        print("<-- EnvDrv::recv_b %d" % ret, flush=True)
+        return ret
